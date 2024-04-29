@@ -1,4 +1,7 @@
 import subprocess
+import logging
+
+log = logging.getLogger("app")
 
 
 def run_command(command, file_path):
@@ -12,8 +15,10 @@ def run_command(command, file_path):
 
         return result
     except subprocess.CalledProcessError as e:
-        # Handle any errors that occur during command execution
         error = e.output.decode("utf-8").strip()
         result = {"command": command, "error": error}
-
+        log.error(f"run_command CalledProcessError: {str(e)}")
         return result
+    except Exception as e:
+        log.error(f"run_command: {str(e)}")
+        result = {"command": command, "error": str(e)}

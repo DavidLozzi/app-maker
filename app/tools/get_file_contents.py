@@ -1,3 +1,8 @@
+import logging
+
+log = logging.getLogger("app")
+
+
 def get_file_contents(file_path, file_names):
     contents = ""
     for file_name in file_names:
@@ -5,8 +10,9 @@ def get_file_contents(file_path, file_names):
         try:
             with open(full_path, "r") as file:
                 contents += f"File: {file_name}\nContents:\n{file.read()}\n\n"
-        except FileNotFoundError:
+        except FileNotFoundError as e:
             contents += f"File: {file_name}\File not found\n\n"
+            log.error(f"get_file_contents: {contents} {str(e)}")
         except Exception as e:
-            print(f"Error reading file: {file_name} {str(e)}")
+            log.error(f"get_file_contents: {file_name} {str(e)}")
     return contents

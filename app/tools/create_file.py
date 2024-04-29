@@ -1,4 +1,7 @@
 import os
+import logging
+
+log = logging.getLogger("app")
 
 
 def create_file(file_path, file_name, file_contents):
@@ -9,4 +12,6 @@ def create_file(file_path, file_name, file_contents):
             file.write(file_contents)
         return f"File '{file_name}' created successfully."
     except Exception as e:
-        return f"Error creating file '{file_name}': {str(e)}"
+        error = f"Error creating file '{file_name}': {str(e)}"
+        log.error(f"create_file: {error}")
+        return error
