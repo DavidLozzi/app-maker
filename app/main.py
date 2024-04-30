@@ -1,11 +1,6 @@
 import argparse
 import json
-import os
 from dotenv import load_dotenv
-from app.utils.logger import setup_logger
-
-log = setup_logger()
-
 from app.gpt import gpt_messages
 
 # from app.prompts.convert_repo import (
@@ -15,18 +10,19 @@ from app.gpt import gpt_messages
 from app.prompts.create_project import (
     initial_assessment_prompt,
     define_action_plan_prompt,
-    action_plan_prompt,
 )
 from app.messages import system_message, user_message
 from app.tools.runner import (
     run_tool,
-    perform_action,
+    run_tools,
     get_prerequisites,
     create_detailed_action_plan,
     create_action_plan_summary,
 )
-from app.utils.file_system import get_folder_inventory, delete_subfolder
+from app.utils.file_system import empty_directory
+from app.utils.logger import setup_logger
 
+log = setup_logger()
 load_dotenv()
 
 parser = argparse.ArgumentParser(
@@ -45,6 +41,7 @@ def doit():
     # delete_subfolder(args.path, "target")
     # delete_subfolder(args.path, "venv")
     # folder_struct = get_folder_inventory(args.path)
+    empty_directory(args.path)
     messages = [
         # system_message(action_plan_prompt()),
         # user_message(f"Here's my repo's folder structure:\n\n{folder_struct}"),
@@ -76,11 +73,11 @@ As an admin to the app:
 per person, total shares viewed, average share views per user, etc.
 
 Technical requirements:
-- The entire stack will be hosted in AWS, ideally use AWS Amplify if it makes sense
+- The entire stack will be hosted in AWS, use AWS Amplify for the frontend and backend
+    - Backend should be written in Python, ideally as Lambdas
+    - Frontend should be written in ReactJS, create the app using create-react-app
+    - The data should be stored in a relational database
 - Aim for low cost, performance isn't incredibly important right now as it'll be a couple of users
-- Backend should be written in Python, ideally as Lambdas
-- Frontend should be written in ReactJS
-- The data should be stored in a relational database
 
 Design requirements:
 - The primary color should be a deep calm purple, you may identify secondary and tertiary colors
@@ -89,6 +86,7 @@ Design requirements:
 """
         ),
     ]
+    log.info("Running prompt initial_assessment_prompt")
     # response = gpt_messages(messages=messages, in_json=True)
     # response = gpt_messages(messages=messages)
     response = """'### Understanding the Intent for the Application
@@ -201,7 +199,8 @@ This comprehensive approach aims to cover the functional, technical, and design 
     }
   ]
 }"""
-    # response = gpt_messages(messages=messages, in_json=True)
+    log.info("Running prompt define_action_plan_prompt")
+    response = gpt_messages(messages=messages, in_json=True)
     log.info(f"\n*****\nAction Plans:\n\n{response}")
     action_plans = json.loads(response)["action_plans"]
     action_plans = sorted(action_plans, key=lambda task: task["order"])
@@ -215,12 +214,18 @@ HIGH LEVEL ACTION PLANS:
     while current_step <= last_step:
         for task in [task for task in action_plans if task["order"] == current_step]:
             prereqs = get_prerequisites(task, prefix, action_plans, args.path)
-            action_plan_output = create_detailed_action_plan(
+            action_plan_details = create_detailed_action_plan(
                 task, prefix, prereqs, action_plans
             )
-            task["action_plan_details"] = json.loads(action_plan_output)
+            task["action_plan_details"] = json.loads(action_plan_details)
+            task_output = run_tools(task["action_plan_details"]["actions"], args.path)
+
             summary = create_action_plan_summary(
-                prefix, action_plan_output, task["action_plan"], action_plans
+                prefix,
+                action_plan_details,
+                task_output,
+                task["action_plan"],
+                action_plans,
             )
             task["summary"] = summary
         current_step += 1

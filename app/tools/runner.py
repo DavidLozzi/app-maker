@@ -18,13 +18,15 @@ log = logging.getLogger("app")
 
 def run_tool(tool, source_path):
     log.info(f"Running Command: {tool['tool']}::{tool['params']}")
-    target_path = f"{source_path}/target"
+    target_path = source_path
     if tool["tool"] == "run_command":
         result = run_command(tool["params"], source_path)
     elif tool["tool"] == "get_file_contents":
         result = get_file_contents(source_path, tool["params"])
     elif tool["tool"] == "create_file":
-        result = create_file(target_path, tool["params"][0], tool["params"][1])
+        result = create_file(
+            f"{source_path}/{target_path}", tool["params"][0], tool["params"][1]
+        )
     elif tool["tool"] == "run_python":
         result = run_python(tool["params"])
     elif tool["tool"] == "human_in_middle":
@@ -34,25 +36,35 @@ def run_tool(tool, source_path):
     return f"Output from tool '{tool['tool']}' with params '{tool['params']}':\n{result}\n\n"
 
 
-def perform_action(task, task_output, step_output, output_path):
-    log.info(task["action"])
-    user_prefix = ""
-    if task_output:
-        user_prefix = f"Previous Tasks:\n{task_output}\n\n"
-    messages = [
-        system_message(create_the_action_plan_prompt()),
-        user_message(
-            f"{user_prefix}YOUR NEXT TASK\nName: {task['action']}\nDetails: {task['details']}"
-        ),
-    ]
-    response = gpt_messages(messages=messages, in_json=True)
-    log.info("\n*****\n  Perform the Action:")
-    log.info(response)
-    log.info("\n\n")
-    response = json.loads(response)
-    for tool in response["tools"]:
-        step_output += run_tool(tool, output_path)
+# TODO add a troubleshooting step to the action plan per tool, let GPT tshoot itself
+
+
+def run_tools(tools, source_path):
+    step_output = ""
+    for tool in tools:
+        step_output += run_tool(tool, source_path)
     return step_output
+
+
+# def perform_action(task, task_output, step_output, output_path):
+#     log.info(task["action"])
+#     user_prefix = ""
+#     if task_output:
+#         user_prefix = f"Previous Tasks:\n{task_output}\n\n"
+#     messages = [
+#         system_message(create_the_action_plan_prompt()),
+#         user_message(
+#             f"{user_prefix}YOUR NEXT TASK\nName: {task['action']}\nDetails: {task['details']}"
+#         ),
+#     ]
+#     response = gpt_messages(messages=messages, in_json=True)
+#     log.info("\n*****\n  Perform the Action:")
+#     log.info(response)
+#     log.info("\n\n")
+#     response = json.loads(response)
+#     for tool in response["tools"]:
+#         step_output += run_tool(tool, output_path)
+#     return step_output
 
 
 def get_existing_summaries(all_action_plans):
@@ -77,6 +89,7 @@ def get_prerequisites(action_plan, prefix, all_action_plans, target_path):
             f"{prefix}{summaries}ACTION PLAN\nName: {action_plan['action_plan']}\nDetails: {action_plan['details']}"
         ),
     ]
+    log.info("Running prompt prereq_action_plan_prompt")
     response = gpt_messages(messages=messages, in_json=True)
     log.info("\n*****\nPrerequisites Action Plan:")
     log.info(response)
@@ -101,6 +114,7 @@ def create_detailed_action_plan(action_plan, prefix, prereqs, all_action_plans):
         system_message(create_the_action_plan_prompt()),
         user_message(user_msg),
     ]
+    log.info("Running prompt create_the_action_plan_prompt")
     response = gpt_messages(messages=messages, in_json=True)
     log.info("\n*****\nAction Plan:")
     log.info(response)
@@ -108,7 +122,7 @@ def create_detailed_action_plan(action_plan, prefix, prereqs, all_action_plans):
 
 
 def create_action_plan_summary(
-    prereqs, action_plan, action_plan_name, all_action_plans
+    prereqs, action_plan, task_ouput, action_plan_name, all_action_plans
 ):
     log.info(f"Summarizing {action_plan}")
     summaries = get_existing_summaries(all_action_plans)
@@ -118,9 +132,19 @@ def create_action_plan_summary(
     messages = [
         system_message(summarize_action_plan_prompt()),
         user_message(
-            f"{prereqs}{summaries}\n\nACTION PLAN\nName:{action_plan_name}\n{action_plan}"
+            f"""{prereqs}\
+{summaries}
+
+ACTION PLAN
+Name:{action_plan_name}
+{action_plan}
+
+OUTPUTS:
+{task_ouput}"""
         ),
     ]
+
+    log.info("Running prompt summarize_action_plan_prompt")
     response = gpt_messages(messages=messages, in_json=True)
     log.info(f"\n*****\Summary for {action_plan_name}:")
     log.info(response)

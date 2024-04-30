@@ -7,12 +7,14 @@ def human_in_middle(instructions):
     try:
         user_answers = []
         for instruction in instructions:
-            print(instruction)
-            answer = input("Did you complete the instruction? (Y/N): ")
+            print(f"\n{instruction}")
+            answer = input(
+                "\nDid you complete the instruction? (Yes / No / Paste Output):"
+            )
             user_answers.append(
                 f"Instruction: {instruction}\nThe user responded: {answer}"
             )
-        log.info(
+        log.debug(
             f"Human in the middle instructions: {instructions}\nAnswers: {user_answers}"
         )
         return user_answers

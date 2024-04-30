@@ -30,3 +30,17 @@ def delete_subfolder(folder_path, folder_name):
     except Exception as e:
         error = f"delete_subfolder: {str(e)}"
         log.error(error)
+
+
+def empty_directory(folder_path):
+    try:
+        for file in os.listdir(folder_path):
+            file_path = os.path.join(folder_path, file)
+            if os.path.isfile(file_path):
+                os.unlink(file_path)
+            elif os.path.isdir(file_path):
+                shutil.rmtree(file_path)
+        log.info(f"Directory '{folder_path}' emptied successfully.")
+    except Exception as e:
+        error = f"empty_directory: {str(e)}"
+        log.error(error)
