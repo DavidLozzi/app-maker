@@ -56,7 +56,6 @@ to create a detailed Story level action plan by another GPT.
 # Additional Notes
 - The requirements provided to you will be also sent along with each action plan
 
-
 # Your Output
 - List of action plans for other GPTs to generate an action plan from, return {\
 "action_plan": "action plan name",\
