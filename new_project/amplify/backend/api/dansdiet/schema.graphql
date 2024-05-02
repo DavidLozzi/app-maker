@@ -1,0 +1,17 @@
+# GraphQL schema definition for Dan's Diet
+
+type Diet {
+  id: ID!
+  name: String!
+  restrictions: [String]
+  allowedFoods: [String]
+  substitutions: [String]
+}
+
+type Query {
+  getDiet(id: ID!): Diet
+}
+
+type Mutation {
+  createDiet(name: String!, restrictions: [String], allowedFoods: [String], substitutions: [String]): Diet
+}

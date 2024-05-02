@@ -20,4 +20,4 @@ def human_in_middle(instructions):
         return user_answers
     except Exception as e:
         log.error(f"human_in_middle: {str(e)}")
-        return f"Instruction: {instruction} errored: {str(e)}"
+        return f"Error with Instruction: {instruction}: {str(e)}"

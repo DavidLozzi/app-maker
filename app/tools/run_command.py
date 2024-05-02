@@ -6,12 +6,24 @@ log = logging.getLogger("app")
 
 def run_command(command, file_path):
     try:
-        output = subprocess.check_output(
-            " ".join(command), cwd=file_path, shell=True, stderr=subprocess.STDOUT
+        process = subprocess.Popen(
+            " ".join(command),
+            cwd=file_path,
+            shell=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            stdin=subprocess.PIPE,
         )
-        output = output.decode("utf-8").strip()
 
-        result = {"command": command, "output": output}
+        output = ""
+        for line in iter(process.stdout.readline, b""):
+            line = line.decode("utf-8").strip()
+            print(line)  # print the line to the console
+            output += line + "\n"
+
+        process.communicate()  # wait for the process to finish
+
+        result = {"command": command, "output": output.strip()}
 
         return result
     except subprocess.CalledProcessError as e:
@@ -22,3 +34,4 @@ def run_command(command, file_path):
     except Exception as e:
         log.error(f"run_command: {str(e)}")
         result = {"command": command, "error": str(e)}
+        return result

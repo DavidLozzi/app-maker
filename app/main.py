@@ -200,7 +200,71 @@ This comprehensive approach aims to cover the functional, technical, and design 
   ]
 }"""
     log.info("Running prompt define_action_plan_prompt")
-    response = gpt_messages(messages=messages, in_json=True)
+    response = """{
+      "action_plans": [
+        {
+          "action_plan": "Project Setup and Initial Configuration",
+          "details": "Set up the project repository, define the directory structure, and configure initial settings for ReactJS frontend and AWS backend services. Include setup for AWS Lambda, RDS with PostgreSQL, AWS Amplify, and Cognito for authentication. Establish CI/CD pipelines using AWS Amplify.",
+          "order": 1
+        },
+        {
+          "action_plan": "Design System and Theme Implementation",
+          "details": "Develop a design system based on the provided color scheme (deep calm purple, light grey, soft green) using Material-UI. This includes creating a theme file, defining global styles, and ensuring accessibility standards are met.",
+          "order": 2
+        },
+        {
+          "action_plan": "Authentication and Authorization",
+          "details": "Implement authentication and authorization mechanisms using AWS Cognito. Set up user roles (Diet Managers, Diet Viewers, Admins) with appropriate access controls.",
+          "order": 3
+        },
+        {
+          "action_plan": "Database Schema Design",
+          "details": "Design and implement the database schema in AWS RDS PostgreSQL. This includes tables for users, diets, food restrictions, allowed foods, substitutions, and shared diet links.",
+          "order": 4
+        },
+        {
+          "action_plan": "Backend API Development",
+          "details": "Develop RESTful APIs using AWS Lambda for user registration/login, diet management (creation, update, deletion), diet sharing, and admin functionalities (user activity monitoring, account management, app adoption statistics).",
+          "order": 5
+        },
+        {
+          "action_plan": "Frontend Development - User Registration and Login",
+          "details": "Implement the user interface for registration and login processes, integrating with AWS Cognito for authentication.",
+          "order": 6
+        },
+        {
+          "action_plan": "Frontend Development - Diet Management",
+          "details": "Develop the UI components and pages for creating, managing, and sharing diets. This includes forms for diet creation, listing diets, and a detailed view for each diet with options to edit, delete, or share.",
+          "order": 7
+        },
+        {
+          "action_plan": "Frontend Development - Viewing Shared Diets",
+          "details": "Implement the UI for viewing shared diets through a shared link. Ensure viewers can see restrictions, allowed foods, and substitutions without needing to log in.",
+          "order": 8
+        },
+        {
+          "action_plan": "Admin Interface Development",
+          "details": "Develop the admin interface for user activity monitoring, account management, and viewing app adoption statistics. Integrate with AWS QuickSight for analytics.",
+          "order": 9
+        },
+        {
+          "action_plan": "Integration with DALL-E 3 API",
+          "details": "Implement the integration with DALL-E 3 API for generating header images for diets based on their names and restrictions. This involves calling the API from the backend and storing image references in the database.",
+          "order": 10
+        },
+        {
+          "action_plan": "Testing and Quality Assurance",
+          "details": "Conduct thorough testing across all features and user journeys. This includes unit tests, integration tests, and user acceptance testing (UAT) to ensure functionality, performance, security, and accessibility standards are met.",
+          "order": 11
+        },
+        {
+          "action_plan": "Deployment and Monitoring",
+          "details": "Deploy the application using AWS Amplify. Set up monitoring and logging with AWS CloudWatch to track application health and user activities. Prepare for continuous deployment and updates based on user feedback.",
+          "order": 12
+        }
+      ]
+    }"""
+    # response = gpt_messages(messages=messages, in_json=True)
     log.info(f"\n*****\nAction Plans:\n\n{response}")
     action_plans = json.loads(response)["action_plans"]
     action_plans = sorted(action_plans, key=lambda task: task["order"])
@@ -213,7 +277,7 @@ HIGH LEVEL ACTION PLANS:
 {response}\n\n"""
     while current_step <= last_step:
         for task in [task for task in action_plans if task["order"] == current_step]:
-            prereqs = get_prerequisites(task, prefix, action_plans, args.path)
+            prereqs = ""  # get_prerequisites(task, prefix, action_plans, args.path)
             action_plan_details = create_detailed_action_plan(
                 task, prefix, prereqs, action_plans
             )

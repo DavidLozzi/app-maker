@@ -1,22 +1,20 @@
-# Dan's Diet Application
+# Dan's Diet
 
-This project is the development repository for Dan's Diet, an application designed to simplify the process of sharing dietary preferences and restrictions. The application targets individuals responsible for managing diets either for themselves or others, providing functionalities to create, manage, and share diet plans with ease.
-
-## Project Setup
-
-The project is structured into two main parts: the frontend and the backend. The frontend is built using ReactJS with Material-UI for styling, while the backend leverages Python with AWS Lambda for serverless architecture. Data persistence is managed through AWS RDS with a PostgreSQL engine.
-
-### Tech Stack
-
-- **Frontend**: ReactJS, Material-UI
-- **Backend**: Python, AWS Lambda
-- **Database**: AWS RDS (PostgreSQL)
-- **Hosting/Infrastructure**: AWS Amplify
+This project aims to simplify the process of sharing dietary preferences and restrictions. Built with ReactJS, AWS Lambda, RDS (PostgreSQL), AWS Amplify, and Cognito.
 
 ## Getting Started
 
-Instructions for setting up the project locally and deployment guidelines will be added as the project progresses.
+Follow the instructions below to set up the project locally.
 
-## Contributors
+### Prerequisites
 
-This section will list the contributors to the project along with their roles and contact information.
+- Node.js
+- AWS CLI
+- Amplify CLI
+
+### Installation
+
+1. Clone the repository.
+2. Install dependencies: `npm install`.
+3. Set up AWS resources.
+4. Start the development server: `npm start`.

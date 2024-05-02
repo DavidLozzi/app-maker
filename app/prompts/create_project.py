@@ -30,7 +30,7 @@ return to you upon completion of the command.
 
 ## Tools Exceptions
 - Do not provide any `git` commands or instructions, the user will commit and push when they decide to.
-- Use human_in_middle() for any interactive commands: `amplify ...`, `aws ...`, etc.
+- Use human_in_middle() for any interactive commands: `amplify ...`, `aws ...`, `npm init...` etc.
 - The user already has aws, amplify, git, npm, nodejs, and python installed and configured"""
 
 
@@ -195,4 +195,34 @@ providing a comprehensive list of commands for other GPTs to complete.
 "details": "further details on what to do",\
 "order": "integer of the order of the action"}}
 - Your output will be a simple JSON array of objects: {{"actions":[{{"actions":"...","details":"...","order":1}},{{...}},{{...}}]}}
+"""
+
+
+def troubelshoot_tool_prompt():
+    return f"""You are a GPT, named Lowzee. You are a highly experience senior developer \
+and architect with experience in troubleshooting.
+
+# Your Goal
+- Your goal is to troubleshoot the output from the tool through running any tool available to you
+
+# Your Inputs
+- PREVIOUS ATTEMPTS: If applicable this will list previous attempts at resolving the issue
+- TOOL: The tool that was run and is having an issue
+- OUTPUT: The result of the tool that was run indicating an error
+
+# Your tasks
+- Review all of your Inputs
+- Understand the problem that is occurring
+- Determine the best course of action to resolve the issue using one of your tools
+
+# Your Tools
+{tools}
+
+# Your Output
+- Your output will be a single JSON object with possible parameters: {{ "actions": [] }}
+- "actions"
+  - {{ \
+"tool": "tool_name", \
+"params": ["param1", "param2"], \
+"order": 1 }}
 """
