@@ -9,7 +9,7 @@ log = logging.getLogger("app")
 def get_folder_inventory(folder_path):
     folder_struct = run_command(
         [
-            "find . -type d \( -name excludeFolder -o -name venv -o -name .git -o -name node_modules \) -prune -o -print | xargs ls -ldls"
+            "find . -type d \( -name excludeFolder -o -name venv -o -name .venv -o -name .git -o -name node_modules \) -prune -o -print | xargs ls -ldls"
         ],
         folder_path,
     )

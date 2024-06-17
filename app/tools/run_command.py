@@ -6,8 +6,11 @@ log = logging.getLogger("app")
 
 def run_command(command, file_path):
     try:
+        activate_command = "source .venv/bin/activate"
+        full_command = f"{activate_command} && {' '.join(command)}"
+
         process = subprocess.Popen(
-            " ".join(command),
+            full_command,
             cwd=file_path,
             shell=True,
             stdout=subprocess.PIPE,
@@ -23,7 +26,7 @@ def run_command(command, file_path):
 
         process.communicate()  # wait for the process to finish
 
-        result = {"command": command, "output": output.strip()}
+        result = {"command": command, "output": output.strip()[-2000:]}
 
         return result
     except subprocess.CalledProcessError as e:

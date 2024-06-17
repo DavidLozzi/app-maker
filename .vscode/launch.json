@@ -11,6 +11,17 @@
         "./new_project"
       ],
       "console": "integratedTerminal"
+    },
+    {
+      "name": "Debug Tests in chat history",
+      "type": "python",
+      "request": "launch",
+      "module": "app.main",
+      "args": [
+        "~/git/bcg/chat-history",
+        "tests"
+      ],
+      "console": "integratedTerminal"
     }
   ]
 }
