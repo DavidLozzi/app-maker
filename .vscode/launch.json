@@ -2,26 +2,40 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Python: Main",
+      "name": "KT",
       "type": "python",
       "request": "launch",
       "module": "app.main",
       "args": [
-        // "~/git/ssl-gpt",
-        "./new_project"
+        "~/git/generative",
+        "kt"
       ],
-      "console": "integratedTerminal"
+      "console": "integratedTerminal",
+      "pythonPath": "${workspaceFolder}/.venv/bin/python"
     },
     {
-      "name": "Debug Tests in chat history",
+      "name": "Tests",
       "type": "python",
       "request": "launch",
       "module": "app.main",
       "args": [
-        "~/git/bcg/chat-history",
+        "~/git/retrieval",
         "tests"
       ],
-      "console": "integratedTerminal"
+      "console": "integratedTerminal",
+      "pythonPath": "${workspaceFolder}/.venv/bin/python"
+    },
+    {
+      "name": "Refactor",
+      "type": "python",
+      "request": "launch",
+      "module": "app.main",
+      "args": [
+        "~/git/generative",
+        "refactor"
+      ],
+      "console": "integratedTerminal",
+      "pythonPath": "${workspaceFolder}/.venv/bin/python"
     }
   ]
 }

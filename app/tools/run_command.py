@@ -4,8 +4,9 @@ import logging
 log = logging.getLogger("app")
 
 
-def run_command(command, file_path):
+def run_command(file_path, tool):
     try:
+        command = tool["params"]
         activate_command = "source .venv/bin/activate"
         full_command = f"{activate_command} && {' '.join(command)}"
 
@@ -26,15 +27,13 @@ def run_command(command, file_path):
 
         process.communicate()  # wait for the process to finish
 
-        result = {"command": command, "output": output.strip()[-2000:]}
-
-        return result
+        result = {"action": tool, "output": output.strip()[-5000:]}
     except subprocess.CalledProcessError as e:
         error = e.output.decode("utf-8").strip()
-        result = {"command": command, "error": error}
+        result = {"action": tool, "error": error}
         log.error(f"run_command CalledProcessError: {str(e)}")
-        return result
     except Exception as e:
         log.error(f"run_command: {str(e)}")
-        result = {"command": command, "error": str(e)}
-        return result
+        result = {"action": tool, "error": str(e)}
+
+    return result

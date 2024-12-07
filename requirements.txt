@@ -1,3 +1,5 @@
-hupper
+asyncio
+httpx
+pydantic
 python-dotenv
-openai
+regex

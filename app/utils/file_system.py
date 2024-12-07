@@ -8,10 +8,15 @@ log = logging.getLogger("app")
 
 def get_folder_inventory(folder_path):
     folder_struct = run_command(
-        [
-            "find . -type d \( -name excludeFolder -o -name venv -o -name .venv -o -name .git -o -name node_modules \) -prune -o -print | xargs ls -ldls"
-        ],
         folder_path,
+        {
+            "tool": "run_command",
+            "name": "get_folder_inventory",
+            "params": [
+                "find . -type d \( -name excludeFolder -o -name venv -o -name .venv -o -name .git -o -name node_modules -o -name __pycache__ \) -prune -o -print | xargs ls -ldls"
+            ],
+            "order": 1,
+        },
     )
 
     log.info(f"\nFiles and Folders to assess:\n{folder_struct}")
