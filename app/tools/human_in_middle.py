@@ -10,7 +10,7 @@ def human_in_middle(tool):
         for instruction in instructions:
             print(f"\n{instruction}")
             answer = input(
-                "\nDid you complete the instruction? (Yes / No / Paste Output):"
+                "\nDid you complete the instruction? (Respond with any message or paste an output):"
             )
             user_answers.append(
                 f"Instruction: {instruction}\nThe user responded: {answer}"

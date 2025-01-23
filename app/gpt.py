@@ -33,6 +33,8 @@ async def call_gpt_4o(messages, json_format=False):
     headers = {"api-key": APIM_4O_KEY, "Content-Type": "application/json"}
 
     async with httpx.AsyncClient(timeout=300) as client:
+        log.info("Calling GPT 4o")
+        log.debug(f"Payload: {payload}")
         response = await client.post(APIM_4O_URL, headers=headers, data=payload)
 
         if response.status_code != 200:
@@ -49,6 +51,8 @@ async def call_gpt_o1(messages):
         "max_completion_tokens": 25000,
     }
     async with httpx.AsyncClient(timeout=300) as client:
+        log.info("Calling GPT o1, this may take a minute")
+        log.debug(f"Payload: {payload}")
         response = await client.post(
             APIM_O1_URL, headers=headers, data=json.dumps(payload)
         )
@@ -60,7 +64,7 @@ async def call_gpt_o1(messages):
         tokens = resp_json["usage"]["total_tokens"]
         all_tokens += tokens
         log.info(f"Tokens used: {tokens}, Total tokens used: {all_tokens}")
-        print(resp_json["choices"][-1]["message"]["content"])
+        # print(resp_json["choices"][-1]["message"]["content"])
 
         return resp_json
 
@@ -76,7 +80,7 @@ async def gpt_o1_json(messages=[]):
             response["choices"][-1]["message"]["content"],
             regex.DOTALL | regex.VERBOSE,
         )
-        print(match.group(0))
+        # print(match.group(0))
         return match.group(0)
     except Exception as e:
         error = f"gpt_json: {str(e)}"

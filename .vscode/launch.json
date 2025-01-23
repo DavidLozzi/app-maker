@@ -7,7 +7,7 @@
       "request": "launch",
       "module": "app.main",
       "args": [
-        "~/git/generative",
+        "~/git/sp-connector",
         "kt"
       ],
       "console": "integratedTerminal",
@@ -19,8 +19,9 @@
       "request": "launch",
       "module": "app.main",
       "args": [
-        "~/git/retrieval",
-        "tests"
+        "~/git/generative",
+        "tests",
+        ""
       ],
       "console": "integratedTerminal",
       "pythonPath": "${workspaceFolder}/.venv/bin/python"

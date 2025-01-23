@@ -4,8 +4,9 @@ from app.tools.create_file import create_file
 from app.tools.run_python import run_python
 from app.tools.human_in_middle import human_in_middle
 from app.tools.create_image import create_image
-import logging
 import csv
+import logging
+import os
 
 log = logging.getLogger("app")
 
@@ -21,9 +22,10 @@ def flatten_result(result):
     return flat_result
 
 
-def output_to_csv(result, output_path):
+def output_to_csv(file_path, result):
     flat_result = flatten_result(result)
     keys = flat_result.keys()
+    output_path = os.path.join(file_path, "tools_output.csv")
     with open(output_path, "a", newline="") as output_file:
         dict_writer = csv.DictWriter(output_file, fieldnames=keys)
         dict_writer.writerow(flat_result)
@@ -42,14 +44,14 @@ async def run_tool(tool, source_path):
     elif tool["tool"] == "human_in_middle":
         result = human_in_middle(tool)
     elif tool["tool"] == "create_image":
-        log.info("Creating Image")
+        log.info("*** TBD Creating Image")
         result = await create_image(source_path, tool)
     elif tool["tool"] == "clear_previous":
-        log.info("Clearing Previous Output")
+        log.info("*** TBD Clearing Previous Output")
 
-    log.info(f"Result: {result}")
+    log.debug(f"Result: {result}")
 
-    output_to_csv(result, "output.csv")
+    output_to_csv(source_path, result)
 
     return result
 

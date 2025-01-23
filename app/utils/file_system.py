@@ -7,19 +7,33 @@ log = logging.getLogger("app")
 
 
 def get_folder_inventory(folder_path):
+    exclude_dirs = [
+        "excludeFolder",
+        "build",
+        "bin",
+        "venv",
+        ".venv",
+        ".git",
+        "node_modules",
+        "__pycache__",
+    ]
+    exclude_params = " -o ".join([f"-name {d}" for d in exclude_dirs])
+    command = (
+        f"find . -type d \\( {exclude_params} \\) -prune -o -print | xargs ls -ldls"
+    )
+
     folder_struct = run_command(
         folder_path,
         {
             "tool": "run_command",
             "name": "get_folder_inventory",
-            "params": [
-                "find . -type d \( -name excludeFolder -o -name venv -o -name .venv -o -name .git -o -name node_modules -o -name __pycache__ \) -prune -o -print | xargs ls -ldls"
-            ],
+            "params": [command],
             "order": 1,
         },
     )
 
-    log.info(f"\nFiles and Folders to assess:\n{folder_struct}")
+    log.info(f"Files and Folders included from {folder_path}")
+    log.debug(folder_struct)
 
     return folder_struct
 

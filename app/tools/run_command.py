@@ -7,8 +7,8 @@ log = logging.getLogger("app")
 def run_command(file_path, tool):
     try:
         command = tool["params"]
-        activate_command = "source .venv/bin/activate"
-        full_command = f"{activate_command} && {' '.join(command)}"
+        # activate_command = "source .venv/bin/activate"
+        full_command = " ".join(command)
 
         process = subprocess.Popen(
             full_command,
@@ -22,7 +22,7 @@ def run_command(file_path, tool):
         output = ""
         for line in iter(process.stdout.readline, b""):
             line = line.decode("utf-8").strip()
-            print(line)  # print the line to the console
+            # print(line)  # print the line to the console
             output += line + "\n"
 
         process.communicate()  # wait for the process to finish

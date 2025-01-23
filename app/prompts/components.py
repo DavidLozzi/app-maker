@@ -1,4 +1,3 @@
-import json
 from app.models.output import OutputModel
 
 tools = """The GPTs have access to various tools. These tools are run within Python, as noted. Use these tools appropriately based on the task requirements:
@@ -19,21 +18,21 @@ return to you upon completion of the command.
 - The user already has aws, amplify, git, npm, nodejs, and python installed and configured"""
 
 output = f"""- Provide a list of actions to accomplish your goal.
-- Your output will be a single JSON as defined: {json.dumps(OutputModel.model_json_schema())}"""
+- Your output will be a single JSON as defined: {OutputModel.schema_json()}"""
 
 
 def init_prompt(reqs):
     return f"""# Your Tasks
-- Review the FOLDERS structure
-- Review the README file
+- Review the Files and Folders structure
+- Review the Readme file
 - Review the Your Requirements
 - Review Your Tools and provide any action or actions you wish to take
 - Review Your Output
 
 # Your Inputs
-- FOLDERS: The folder path and structure of the code
-- README: The README.md file for the code which should provide details about the code.
-- NOTES: Any notes or comments from the user about the code
+- Files and Folders: The folder path and structure of the code
+- Readme: The README.md file for the code which should provide details about the code.
+- Notes: Any notes or comments from the user about the code
 
 # Your Requirements
 {reqs}
@@ -45,26 +44,23 @@ def init_prompt(reqs):
 {output}"""
 
 
-init_user_prompt = """FOLDERS:
-*****
+init_user_prompt = """# Files and Folders:
 {folder_struct}
-*****
 
-README:
-*****
+# Readme:
 {readme}
-*****"""
+"""
 
 
 def act_step_complete(reqs):
     return f"""
 # Your Tasks
-- Review the FOLDERS structure
-- Review the README file
+- Review the Files and Folders structure
+- Review the Readme file
 - Review Your Requirements
 - Review Your Tools
-- Review PREVIOUS for actions already taken and their outputs
-- Determine if the PREVIOUS actions and their outputs are adequate to achieve \
+- Review Previous for actions already taken and their outputs
+- Determine if the Previous actions and their outputs are adequate to achieve \
 Your Goal and meet the Requirements
   - If not, provide any additional actions to achieve Your Goal and meet the Requirements
   - Do not repeat actions unless you are retrying or want to see if a file has changed
@@ -72,10 +68,10 @@ Your Goal and meet the Requirements
 - Review Your Output
 
 # Your Inputs
-- FOLDERS: The folder path and structure of the code
-- README: The README.md file for the code which should provide details about the code.
-- NOTES: Any notes or comments from the user about the code
-- PREVIOUS: Any previous actions taken and their resulting output.
+- Files and Folders: The folder path and structure of the code
+- Readme: The README.md file for the code which should provide details about the code.
+- Notes: Any notes or comments from the user about the code
+- Previous: Any previous actions taken and their resulting output.
 
 # Your Requirements
 {reqs}
